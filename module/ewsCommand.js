@@ -4,28 +4,29 @@ var moment = require('moment-timezone');
 var fs = require('fs');
 require('dotenv').config();
 
-// exchange server connection info 
-// var ewsConfig = {
-//   username: process.env.EWSUSER,
-//   password: process.env.EWSPASSWD,
-//   host: process.env.EWSHOST  
-// };
+if(process.env.O365){
+  // Office 365 Configuration
+  var ewsConfig = {
+    username: process.env.EWSUSER,
+    password: process.env.EWSPASSWD,
+    host: process.env.EWSHOST,  
+    auth: 'basic'
+  };
 
-// var options = {
-//  strictSSL: false
-// };
+  var options = {};
+}else{
+  // exchange server connection info 
+  var ewsConfig = {
+    username: process.env.EWSUSER,
+    password: process.env.EWSPASSWD,
+    host: process.env.EWSHOST  
+  };
 
-// Office 365 Configuration
-var ewsConfig = {
-  username: process.env.EWSUSER,
-  password: process.env.EWSPASSWD,
-  host: process.env.EWSHOST,  
-  auth: 'basic'
-};
+  var options = {
+  strictSSL: false
+  };
+}
 
-var options = {
-
-};
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -43,23 +44,24 @@ fs.readFile('./tzEWSid.json', function (err, data) {
 // initialize node-ews 
 var ews = new EWS(ewsConfig, options);
 
-// Exchange onPrem
-// var ewsSoapHeader = {
-//   't:RequestServerVersion': {
-//     attributes: {
-//       Version: "Exchange2010_SP1"
-//     }
-//   }
-// };
-
-// Office 356
-var ewsSoapHeader = {
-  't:RequestServerVersion': {
-    attributes: {
-      Version: "Exchange2013"
+if(process.env.O365){
+  // Office 356
+  var ewsSoapHeader = {
+    't:RequestServerVersion': {
+      attributes: {
+        Version: "Exchange2013"
+      }
     }
-  }
-};
+  };
+}else{
+  var ewsSoapHeader = {
+    't:RequestServerVersion': {
+      attributes: {
+        Version: "Exchange2010_SP1"
+      }
+    }
+  };
+}
 
 module.exports = {
     genArgs: function(params){
