@@ -19,6 +19,10 @@
     "APIAI": {
       "description": "Cisco Spark Bot Access Token"
     },
+    "O365": {
+      "description": "Office 365 Environment",
+      "value": true
+    },
     "EWSUSER": {
       "description": "Exchange Web Services User Name"
     },
@@ -26,10 +30,12 @@
       "description": "Exchange Web Services Password"
     },
     "EWSHOST": {
-      "description": "URL for Exchange Web Services"
+      "description": "URL for Exchange Web Services",
+      "value": "https://outlook.office365.com/"
     },
     "COLLECTION":{
-      "description": "MongoDB Collection name containing building information."
+      "description": "MongoDB Collection name containing building information.",
+      "value": "buildings"
     },
     "SUPPORTSPACE":{
       "description": "Space space ID that users can be added to when using the support keyword."
