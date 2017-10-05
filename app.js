@@ -17,7 +17,7 @@ var CiscoBuildings = require("./module/buildings");
 var ewsCmd = require("./module/ewsCommand");
 var Manager = require('./module/manager');
 var time = require('./module/timeNLP');
-var privateAPI = require('./privateAPI');
+var privateAPI = require('./module/privateAPI');
 
 
 var accessToken = process.env.BOTTOKEN;
