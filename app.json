@@ -1,0 +1,47 @@
+{
+  "name": "roomRequest-Spark-Bot",
+  "description": "roomRequest is a Cisco Spark bot created to help users find and book available conferences rooms.",
+  "repository": "https://github.com/bdm1981/roomRequest-Spark-Bot",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": [
+    "ews",
+    "exchange",
+    "botkit",
+    "O365",
+    "cisco",
+    "spark",
+    "bot"
+  ],
+  "env": {
+    "public_address": {
+      "description": "Publicly accessible FDQN of the application. If Heroku use the full URL (eg. https://app.herokuapp.com"
+    },
+    "access_token": {
+      "description": "Cisco Spark Bot Access Token"
+    },
+    "APIAI": {
+      "description": "Cisco Spark Bot Access Token"
+    },
+    "EWSUSER": {
+      "description": "Exchange Web Services User Name"
+    },
+    "EWSPASSWD": {
+      "description": "Exchange Web Services Password"
+    },
+    "EWSHOST": {
+      "description": "URL for Exchange Web Services"
+    },
+    "COLLECTION":{
+      "description": "MongoDB Collection name containing building information."
+    },
+    "SUPPORTSPACE":{
+      "description": "Space space ID that users can be added to when using the support keyword."
+    },
+    "mongo": {
+      "description": "Mongo DB Connection String"
+    }
+  },
+  "addons": [
+    "mongolab"
+  ]
+}
