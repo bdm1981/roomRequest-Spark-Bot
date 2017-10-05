@@ -1,0 +1,10 @@
+{
+  "apps" : [{
+    "name"        : "roomRequest",
+    "script"      : "./app.js",
+    "watch"       : ["routes", "models", "app.js", "./module/*"],
+    "env": {
+      "NODE_ENV": "development",
+    }
+  }]
+}
