@@ -1,4 +1,6 @@
-# roomRequest-Spark-Bot
+## roomRequest-Spark-Bot
+#### Written by Brad McAllister
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/bdm1981/roomRequest-Spark-Bot)
 roomRequest is a Cisco Spark bot created to help users find and book available conferences rooms. Leveraging the Botkit.io and API.AI I have tried to create an experience that is natural to the end user. Allowing the user to determine what rooms are available and book a free room.
 
 # Requirements
