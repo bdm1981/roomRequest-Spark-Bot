@@ -1,6 +1,12 @@
 var Promise = require('bluebird');
 var mongojs = require('mongojs');
 var moment = require('moment-timezone');
+
+// Heroku Addon Case - use mongo connection string
+if(process.env.MONGODB_URI){
+  process.env.DB = process.env.MONGODB_URI
+}
+
 var db = mongojs(process.env.DB, ['convoState']);
 
 module.exports = {

@@ -2,10 +2,15 @@ var mongojs = require('mongojs');
 var Promise = require('bluebird');
 require('dotenv').config();
 
+// Heroku Addon Case - use mongo connection string
+if(process.env.MONGODB_URI){
+  process.env.DB = process.env.MONGODB_URI
+}
+
 module.exports = {
 
-  connect: function(database) {
-    this.db = mongojs(database, [process.env.COLLECTION]);
+  connect: function() {
+    this.db = mongojs(process.env.DB, [process.env.COLLECTION]);
     this.db.on('error', function (err) {
       console.log('database error', err);
     });

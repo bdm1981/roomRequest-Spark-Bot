@@ -13,10 +13,7 @@
     "bot"
   ],
   "env": {
-    "public_address": {
-      "description": "Publicly accessible FDQN of the application. If Heroku use the full URL (eg. https://app.herokuapp.com"
-    },
-    "access_token": {
+    "BOTTOKEN": {
       "description": "Cisco Spark Bot Access Token"
     },
     "APIAI": {
@@ -37,7 +34,7 @@
     "SUPPORTSPACE":{
       "description": "Space space ID that users can be added to when using the support keyword."
     },
-    "mongo": {
+    "DB": {
       "description": "Mongo DB Connection String"
     }
   },
