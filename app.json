@@ -2,7 +2,7 @@
   "name": "roomRequest-Spark-Bot",
   "description": "roomRequest is a Cisco Spark bot created to help users find and book available conferences rooms.",
   "repository": "https://github.com/bdm1981/roomRequest-Spark-Bot",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "logo": "",
   "keywords": [
     "ews",
     "exchange",
@@ -17,7 +17,7 @@
       "description": "Cisco Spark Bot Access Token"
     },
     "APIAI": {
-      "description": "Cisco Spark Bot Access Token"
+      "description": "API.AI Agent Token. If this hasn't been configured. Click here https://api.ai."
     },
     "O365": {
       "description": "Office 365 Environment",
