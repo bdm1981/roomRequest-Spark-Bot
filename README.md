@@ -15,3 +15,6 @@ When using Office 365, the bot can run in a public cloud. If the bot will interf
 # Installation Instructions
 * Deploying to Heroku (fastest way to test this out!)
 * Installing in your own nodejs environment
+
+# Support
+If you run into a problem, please raise and issue here. If you make a change that would be helpful for others, please submit a pull request.
