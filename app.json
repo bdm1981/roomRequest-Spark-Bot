@@ -20,8 +20,8 @@
       "description": "API.AI Agent Token."
     },
     "O365": {
-      "description": "Office 365 Environment",
-      "value": true
+      "description": "Office 365 Environment. 1=true, 0=false",
+      "value": "1"
     },
     "EWSUSER": {
       "description": "Exchange Web Services User Name"
