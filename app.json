@@ -17,7 +17,7 @@
       "description": "Cisco Spark Bot Access Token"
     },
     "APIAI": {
-      "description": "API.AI Agent Token. If this hasn't been configured. Click here https://api.ai."
+      "description": "API.AI Agent Token."
     },
     "O365": {
       "description": "Office 365 Environment",

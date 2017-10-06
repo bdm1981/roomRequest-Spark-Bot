@@ -1,8 +1,15 @@
 {
-  "name": "roomRequest-inside",
-  "version": "0.0.0",
-  "private": true,
+  "name": "roomRequest-Spark-Bot",
+  "description": "roomRequest is a Cisco Spark bot created to help users find and book available conferences rooms.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bdm1981/roomRequest-Spark-Bot"
+  },
+  "private": false,
   "scripts": {
+    "postinstall": "node ./scripts/postinstall.js",
     "start": "node ./app.js"
   },
   "dependencies": {

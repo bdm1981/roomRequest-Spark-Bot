@@ -71,27 +71,6 @@ module.exports = {
     return roomsArray;
   },
 
-  // update: function(update, callback){
-  //   try{
-  //     this.db.buildings.update({_id: update._id}, {$set: {timezoneId: update.timezoneId, timezoneName: update.timezoneName}}, callback);
-  //   }
-  //   catch (e)
-  //   {
-  //     callback(e);
-  //   }
-  // },
-
-  // updateDST: function(update, callback){
-  //   try{
-  //     console.log(update);
-  //     this.db.buildings.update({buildingId: update.buildingId}, {$set: {dstOffset: update.dstOffset}}, callback);
-  //   }
-  //   catch (e)
-  //   {
-  //     callback(e);
-  //   }
-  // },
-
   videoCheck: function(roomInfo){
     if(roomInfo.tpscreen || roomInfo.tpScreenNumber || roomInfo.videoConferencing == "Y"){
       return true;
