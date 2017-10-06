@@ -13,8 +13,8 @@ roomRequest is a Cisco Spark bot created to help users find and book available c
 When using Office 365, the bot can run in a public cloud. If the bot will interface with an on-prem Exchange deployment, the bot might need to be deployed inside your network to interface with EWS. A Spark web-sockets library is used to allow the bot to receive events without a public address.
 
 # Installation Instructions
-* Deploying to Heroku (fastest way to test this out!)
-* Installing in your own nodejs environment
+* [Deploying to Heroku](https://github.com/bdm1981/roomRequest-Spark-Bot/wiki/Deploying-on-Heroku) (fastest way to test this out!)
+* [Deploying everywhere else](https://github.com/bdm1981/roomRequest-Spark-Bot/wiki/Deploying-everywhere-else)
 
 # Support
 If you run into a problem, please raise and issue here. If you make a change that would be helpful for others, please submit a pull request.
