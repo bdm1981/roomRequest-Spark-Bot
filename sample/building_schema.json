@@ -1,0 +1,35 @@
+{
+    "buildingId": "HQ",
+    "buildingName": "Example HQ",
+    "address1": "",
+    "address2": "",
+    "city": "Chicago",
+    "state": "IL",
+    "phone": "",
+    "type": "Demo Office",
+    "lattitude": "",
+    "longitude": "",
+    "floors": [
+        {
+            "floorID": "1",
+            "floorName": "1ST FLOOR",
+            "drawingName": "",
+            "status": "Online"
+        }
+    ],
+    "timeZoneId": "America/Chicago",
+    "offset": -21600,
+    "conferenceDetails": [
+        {
+            "spnamePretty": "Boardroom",
+            "schedname": "Boardroom (12)",
+            "spaceCap": 1,
+            "videoConferencing": "Y",
+            "tpscreen": "MX800",
+            "proxyStatus": "PUBLIC",
+            "tpScreenNumber": 2,
+            "EmailAddress": "boardroome@example.onmicrosoft.com"
+        }
+    ],
+    "dstOffset": 60
+}
