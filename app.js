@@ -1,32 +1,33 @@
-var SparkWebSocket = require('ciscospark-websocket-events');
-var moment = require('moment-timezone');
+const SparkWebSocket = require('ciscospark-websocket-events');
+const moment = require('moment-timezone');
 require('dotenv').config();
 
-var CiscoSparkClient = require('node-sparkclient');
-var spark = new CiscoSparkClient('Bearer '+process.env.BOTTOKEN);
+const CiscoSparkClient = require('node-sparkclient');
+const spark = new CiscoSparkClient('Bearer '+process.env.BOTTOKEN);
 
 // // api.ai setup
 const apiaibotkit = require('api-ai-botkit');
 const apiai = apiaibotkit(process.env.APIAI);
 
-var Raven = require('raven');
+const Raven = require('raven');
 Raven.config(process.env.DSN).install();
 
 // RoomRequest modules
-var CiscoBuildings = require("./module/buildings");
-var ewsCmd = require("./module/ewsCommand");
-var Manager = require('./module/manager');
-var time = require('./module/timeNLP');
-var privateAPI = require('./module/privateAPI');
+const CiscoBuildings = require("./module/buildings");
+const ewsCmd = require("./module/ewsCommand");
+const Manager = require('./module/manager');
+const time = require('./module/timeNLP');
+const privateAPI = require('./module/privateAPI');
+const msg = require('./module/msg');
 
 
-var accessToken = process.env.BOTTOKEN;
-var PORT = process.env.PORT || 3090;
+const accessToken = process.env.BOTTOKEN;
+const PORT = process.env.PORT || 3090;
 
-var webHookUrl =  "http://localhost:"+PORT+"/ciscospark/receive";
+const webHookUrl =  "http://localhost:"+PORT+"/ciscospark/receive";
 
 var sparkwebsocket = new SparkWebSocket(accessToken);
-sparkwebsocket.connect(function(err,res){
+sparkwebsocket.connect(function(err){
    if (!err) {
      if(webHookUrl)
       sparkwebsocket.setWebHookURL(webHookUrl);
@@ -36,7 +37,7 @@ sparkwebsocket.connect(function(err,res){
 });
 
 ////// Bot Kit //////
-var Botkit = require('botkit');
+const Botkit = require('botkit');
 
 var controller = Botkit.sparkbot({
     stats_optout: true,
@@ -64,25 +65,9 @@ controller.hears('hello', 'direct_message,direct_mention', function(bot, message
   console.log(message);
   privateAPI.startTyping(process.env.BOTTOKEN, message.channel);
   //console.log(message);
-  bot.reply(message, 'Hi,\n\n '+instruct);
+  bot.reply(message, msg.instruct);
   privateAPI.stopTyping(process.env.BOTTOKEN, message.channel);
 });
-
-// messages sent by the bot in response to the user's requests. These can be updated to match your deployment
-
-var msg = {
-  instruct: `
-  **I\'m the RoomRequest Bot!**  I can help you find and book rooms in your offices!\n\n 
-  * To be guided through the process Type: **book a room**, to get started.\n\n
-  * Once you a familiar with the commands you can Type: **book a room at ORD tomorrow from 1 to 4**.\n\n 
-  * You will need to know the building ID you want to book a room at. If you don't know it, [click here](http://www.exmple.com/buildings.html)\n\n 
-  * type: **stop** or **cancel** at any time to cancel a request.\n\n 
-  * type **support** to join a Spark space to ask questions about this bot\n\n * [click here](https://www.example.com/videodemo.mp4) to watch a quick demo video of roomRequest`,
-  cancelled: `You current request has been cancelled.`,
-  success: `Great! Your room is now booked and you should receive a calendar invite shortly!`,
-  error: `Sorry, we ran into an issue booking the room!  This is usually caused by an unknown timezone for your region or your spark email address doesn't match a mailbox on this exchange system. Please type _support_ to join our spark room. Let us know what building you are trying to book a room at and we can fix it.`,
-  support: `You have been added to the Room Request Spark space.`
-}
 
 controller.hears(['help', 'instructions', 'howto', 'faq'], 'direct_message,direct_mention', function(bot, message) {
   bot.reply(message, msg.instruct);
@@ -140,7 +125,6 @@ controller.hears('.*', ['direct_message', 'direct_mention'], function(bot, messa
   })
 
   apiai.process(message, bot);
-
 });
 
 apiai.all(function(message, resp, bot){
@@ -169,16 +153,16 @@ apiai.action('lookup', function(message, resp, bot){
     .then(function(output){
       buildings = output;
       
-      for(var i = 0; i < buildings[0].conferenceDetails.length; i++){
-        var MailboxData = {};
-        MailboxData.Email = {};
-        MailboxData.Email.Address = buildings[0].conferenceDetails[i].EmailAddress;
-        MailboxData.AttendeeType = 'Required';
-        MailboxData.ExcludeConflicts = true;
-        MailboxDataArray.push(MailboxData);
-      };
-      
-      //store building info with the current convo
+      MailboxDataArray = buildings[0].conferenceDetails.map(room => {
+        return {
+            Email: {
+              Address: room.EmailAddress
+            },
+            AttendeeType: 'Required',
+            ExcludeConflicts: true
+          }
+      });
+
       return tracker.update(message, {buildingId: output[0].buildingId, buildingTZid: output[0].timeZoneId, rooms: output[0].conferenceDetails});
     })
     .then(function(){
@@ -246,7 +230,7 @@ apiai.action('selectRoom', function(message, resp, bot){
     }
     return ewsCmd.bookRoom(bookDetail);
   })
-  .then(function(result){
+  .then(function(){
     bot.reply(message, msg.success);
     return tracker.remove(message);
   })
