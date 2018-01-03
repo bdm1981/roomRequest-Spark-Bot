@@ -163,24 +163,21 @@ apiai.action('lookup', function(message, resp, bot){
           }
       });
 
-      return tracker.update(message, {buildingId: output[0].buildingId, buildingTZid: output[0].timeZoneId, rooms: output[0].conferenceDetails});
+      return tracker.update(message, {
+        buildingId: output[0].buildingId, 
+        buildingTZid: output[0].timeZoneId, 
+        rooms: output[0].conferenceDetails,
+        offset: output[0].offset
+        }
+      );
     })
     .then(function(){
-      // Build a dateTime object for use with Scheduling
-      var timeInput = resp.result.parameters.period;
-      var dateString;
-      for(var i = 0; i < timeInput.length; i++){
-        if(timeInput[i]['time-period']){
-          dateString = time.parse(`${resp.result.parameters.date} ${timeInput[i]['time-period'].replace("/", " - ")}`);
-          break;
-        }else if(timeInput[i].time && timeInput.length > 1){
-          dateString = time.parse(`${resp.result.parameters.date} ${timeInput[0].time} - ${timeInput[1].time}`);
-          break;
-        }else if(timeInput[i].time){
-          dateString = time.parse(`${resp.result.parameters.date} ${timeInput[i].time}`);
-          break;
-        }
-      }
+      // pull the current tracker details
+      return tracker.find(message)
+    })
+    .then(function(dbConvo){
+      // normalize time input for consumption by EWS.
+      var dateString = time.input({apiai: resp, timezone: dbConvo.buildingTZid});
       
       // Generator the ewsArgs
       var ewsArgs = ewsCmd.genArgs({
@@ -197,7 +194,7 @@ apiai.action('lookup', function(message, resp, bot){
       return tracker.find(message)
       .then(function(dbConvo){
         // Send user a message that it is looking up avialable rooms
-        var responseText = `One moment while I look for available rooms in **${dbConvo.buildingId.toUpperCase()}** office on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}**.`
+        var responseText = `One moment while I look for available rooms in **${dbConvo.buildingId.toUpperCase()}** office on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}**  _(Local ${dbConvo.buildingId.toUpperCase()} Time)_.`
         
         bot.reply(message, responseText);
         return ewsCmd.freeBusy(MailboxDataArray, dbConvo);

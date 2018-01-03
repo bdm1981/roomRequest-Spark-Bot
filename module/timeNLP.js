@@ -17,6 +17,25 @@ module.exports = {
       console.log("Default End time used: ", endDateTime.format());
     }
     return {start: startDateTime, end: endDateTime};
+  },
+
+  input: function(params){
+    // Build a dateTime object for use with Scheduling
+    var timeInput = params.apiai.result.parameters.period;
+    for(var i = 0; i < timeInput.length; i++){
+      if(params.apiai.result.contexts[0].parameters['period.original'] === "now"){
+        var inputTime = moment(timeInput[0].time, ['h:m:s a', 'H:m:s']);
+        return this.parse(`${params.apiai.result.parameters.date} ${moment(inputTime).tz(params.timezone).format('h:m:s a')}`);
+
+        // dateString.start = moment(dateString.start).utcOffset(dbConvo.offset).format();
+      }else if(timeInput[i]['time-period']){
+        return this.parse(`${params.apiai.result.parameters.date} ${timeInput[i]['time-period'].replace("/", " - ")}`);
+      }else if(timeInput[i].time && timeInput.length > 1){
+        return this.parse(`${params.apiai.result.parameters.date} ${timeInput[0].time} - ${timeInput[1].time}`);
+      }else if(timeInput[i].time){
+        return this.parse(`${params.apiai.result.parameters.date} ${timeInput[i].time}`);
+      }
+    }
   }
 };
 

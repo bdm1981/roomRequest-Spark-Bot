@@ -234,9 +234,9 @@ module.exports = {
       }
 
       if (freeBusyInfo.length === 0) {
-        responseText = `I found no rooms available in **${dbConvo.buildingId}** on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}**.`;
+        responseText = `I found no rooms available in **${dbConvo.buildingId}** on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}** _(Local ${dbConvo.buildingId.toUpperCase()} Time)_.`;
       }else{
-        responseText = `I found ${freeBusyInfo.length} rooms available in **${dbConvo.buildingId}** on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}**. Enter the number of the room you would like to book.\n\n`;
+        responseText = `I found ${freeBusyInfo.length} rooms available in ** on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}** _(Local ${dbConvo.buildingId.toUpperCase()} Time)_. Enter the number of the room you would like to book.\n\n`;
         for (var i = 0; i < freeBusyInfo.length; i += 1) {
         //  responseText += '> '+ `${i+1}. ${freeBusyInfo[i].roomName.replace(/\(Private-Approval required\)|\(Proxy-Approval required\)|\(Public\)/, "")}`;
         responseText += '> '+ `${i+1}. ${freeBusyInfo[i].roomName}`;
