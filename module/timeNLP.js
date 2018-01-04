@@ -24,7 +24,7 @@ module.exports = {
     var timeInput = params.apiai.result.parameters.period;
     for(var i = 0; i < timeInput.length; i++){
       if(params.apiai.result.contexts[0].parameters['period.original'] === "now"){
-        var inputTime = moment(timeInput[0].time, ['h:m:s a', 'H:m:s']);
+        var inputTime = moment.tz(timeInput[0].time, ['h:m:s a', 'H:m:s'], 'America/Chicago');
         return this.parse(`${params.apiai.result.parameters.date} ${moment(inputTime).tz(params.timezone).format('h:m:s a')}`);
 
         // dateString.start = moment(dateString.start).utcOffset(dbConvo.offset).format();

@@ -4,7 +4,7 @@ var moment = require('moment-timezone');
 var fs = require('fs');
 require('dotenv').config();
 
-if(process.env.O365){
+if(process.env.O365 > 0){
   // Office 365 Configuration
   var ewsConfig = {
     username: process.env.EWSUSER,

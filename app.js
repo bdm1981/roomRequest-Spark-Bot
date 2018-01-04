@@ -62,7 +62,7 @@ controller.setupWebserver(PORT, function(err, webserver) {
 var tracker = new Manager.Convo();
 
 controller.hears('hello', 'direct_message,direct_mention', function(bot, message) {
-  console.log(message);
+  console.log(message.user + ' - ' + message.text);
   privateAPI.startTyping(process.env.BOTTOKEN, message.channel);
   //console.log(message);
   bot.reply(message, msg.instruct);
@@ -78,7 +78,7 @@ controller.hears(['support'], 'direct_message,direct_mention', function(bot, mes
     if(err){
       console.log(err);
     }else{
-      console.log(result);
+      console.log(message.user + ' - ' + message.text);
       bot.reply(message, msg.support);
     }
   });
@@ -160,7 +160,7 @@ apiai.action('lookup', function(message, resp, bot){
             },
             AttendeeType: 'Required',
             ExcludeConflicts: true
-          }
+          };
       });
 
       return tracker.update(message, {
@@ -173,7 +173,7 @@ apiai.action('lookup', function(message, resp, bot){
     })
     .then(function(){
       // pull the current tracker details
-      return tracker.find(message)
+      return tracker.find(message);
     })
     .then(function(dbConvo){
       // normalize time input for consumption by EWS.
@@ -213,31 +213,32 @@ apiai.action('lookup', function(message, resp, bot){
 })
 
 apiai.action('selectRoom', function(message, resp, bot){
-  tracker.find(message)
-  .then(function(dbConvo){
-    var index = (parseInt(resp.result.parameters.number)-1);
-    var bookDetail = {
-      requesterEmail: dbConvo.user, 
-      roomEmail: dbConvo.potentialRooms[index].roomEmail, 
-      subject: `${dbConvo.user}'s meeting`, 
-      body: "", 
-      startDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime, 
-      endDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime,
-      timezone: ewsCmd.tzId(dbConvo.buildingTZid)
-    }
-    return ewsCmd.bookRoom(bookDetail);
-  })
-  .then(function(){
-    bot.reply(message, msg.success);
-    return tracker.remove(message);
-  })
-  .catch(function(e){
-    Raven.captureException(e);
-    bot.reply(message, msg.error);
-    return tracker.remove(message);
-  })
-  .catch(function(e){
-    Raven.captureException(e);
-    console.log(e);
-  });
+  console.log(message.user + ' selected option: ' + resp.result.parameters.number);
+  if(parseInt(resp.result.parameters.number) <= 0){
+    bot.reply(message, 'That selection is invalid. Please try again.');
+  }else{
+    tracker.find(message)
+    .then(function(dbConvo){
+      var index = (parseInt(resp.result.parameters.number)-1);
+      var bookDetail = {
+        requesterEmail: dbConvo.user, 
+        roomEmail: dbConvo.potentialRooms[index].roomEmail, 
+        subject: `${dbConvo.user}'s meeting`, 
+        body: "", 
+        startDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime, 
+        endDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime,
+        timezone: ewsCmd.tzId(dbConvo.buildingTZid)
+      };
+      return ewsCmd.bookRoom(bookDetail);
+    })
+    .then(function(){
+      bot.reply(message, msg.success);
+      return tracker.remove(message);
+    })
+    .catch(function(e){
+      Raven.captureException(e);
+      bot.reply(message, msg.error);
+      return tracker.remove(message);
+    });
+  }
 });
