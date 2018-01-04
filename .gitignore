@@ -4,3 +4,6 @@ device.json
 
 instructions/
 assets/
+client_secret.json
+package-lock.json
+credentials/admin-directory_v1-nodejs-quickstart.json
