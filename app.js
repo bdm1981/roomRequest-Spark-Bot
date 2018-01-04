@@ -13,13 +13,12 @@ const Raven = require('raven');
 Raven.config(process.env.DSN).install();
 
 // RoomRequest modules
-const CiscoBuildings = require("./module/buildings");
-const ewsCmd = require("./module/ewsCommand");
+const gAuth = require('./module/authorize');
+const gCmd = require('./module/gSuiteCommand');
 const Manager = require('./module/manager');
 const time = require('./module/timeNLP');
 const privateAPI = require('./module/privateAPI');
 const msg = require('./module/msg');
-
 
 const accessToken = process.env.BOTTOKEN;
 const PORT = process.env.PORT || 3090;
@@ -131,13 +130,10 @@ apiai.all(function(message, resp, bot){
   //console.log(resp.result);
 });
 
-
-
 apiai.action('lookup', function(message, resp, bot){
+  var auth;
   privateAPI.startTyping(process.env.BOTTOKEN, message.channel);
   console.log('lookup action');
-  var buildings;
-  var MailboxDataArray = [];
 
   if(resp.result.actionIncomplete){
     console.log('I need more info');
@@ -147,27 +143,17 @@ apiai.action('lookup', function(message, resp, bot){
   }else{
     tracker.update(message, {userRequest: resp.result.parameters})
     .then(function(){
-      CiscoBuildings.connect(process.env.DB);
-      return CiscoBuildings.find(resp.result.parameters.location[0])
+      return gAuth();
+    })
+    .then(function(auth){
+      auth = auth;
+      return gCmd.findBuilding(auth, resp.result.parameters.location[0]);
     })
     .then(function(output){
-      buildings = output;
-      
-      MailboxDataArray = buildings[0].conferenceDetails.map(room => {
-        return {
-            Email: {
-              Address: room.EmailAddress
-            },
-            AttendeeType: 'Required',
-            ExcludeConflicts: true
-          }
-      });
+      var rooms = output.items;
 
       return tracker.update(message, {
-        buildingId: output[0].buildingId, 
-        buildingTZid: output[0].timeZoneId, 
-        rooms: output[0].conferenceDetails,
-        offset: output[0].offset
+        rooms: rooms
         }
       );
     })
@@ -177,27 +163,29 @@ apiai.action('lookup', function(message, resp, bot){
     })
     .then(function(dbConvo){
       // normalize time input for consumption by EWS.
-      var dateString = time.input({apiai: resp, timezone: dbConvo.buildingTZid});
-      
-      // Generator the ewsArgs
-      var ewsArgs = ewsCmd.genArgs({
-        bias: (buildings[0].offset / 60 * -1),
-        dstOffset: buildings[0].dstOffset,
-        startDateTime: dateString.start,
-        endDateTime: dateString.end
+      var dateString = time.input({apiai: resp, timezone: 'CST'});
+      var rooms = dbConvo.rooms.map(room => {
+        return { "id": room.resourceEmail };
       });
-      
+      // Generator the ewsArgs
+      var freeBusy = {
+        timeMin: dateString.start,
+        timeMax: dateString.end,
+        timeZone: 'CST',
+        items: rooms
+      }
+
       // add the ewsArgs to the dbConvo
-      return tracker.update(message, {ewsArgs: ewsArgs});
+      return tracker.update(message, {freeBusy: freeBusy});
     })
     .then(function(){
       return tracker.find(message)
       .then(function(dbConvo){
         // Send user a message that it is looking up avialable rooms
-        var responseText = `One moment while I look for available rooms in **${dbConvo.buildingId.toUpperCase()}** office on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}**  _(Local ${dbConvo.buildingId.toUpperCase()} Time)_.`
+        var responseText = `One moment while I look for available rooms in **${dbConvo.rooms[0].buildingId.toUpperCase()}** office on **${dbConvo.freeBusy.timeMin} - ${dbConvo.freeBusy.timeMax}**  _(Local ${dbConvo.rooms[0].buildingId.toUpperCase()} Time)_.`
         
         bot.reply(message, responseText);
-        return ewsCmd.freeBusy(MailboxDataArray, dbConvo);
+        return gCmd.freeBusy(auth, dbConvo);
       });
     })
     .then(function(result){

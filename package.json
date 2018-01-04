@@ -21,6 +21,8 @@
     "ciscospark-websocket-events": "^1.0.6",
     "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
+    "google-auth-library": "^0.12.0",
+    "googleapis": "^23.0.0",
     "moment-timezone": "*",
     "mongojs": "*",
     "node-ews": "*",
