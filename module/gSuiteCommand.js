@@ -137,7 +137,7 @@ var gCmd = module.exports = {
       var convo = input;
 
       return new Promise(function(resolve, reject){
-        gAuth().then(auth => {
+        gAuth.auth().then(auth => {
           authStore = auth
           // Lookup the building information
           return gCmd.findBuilding(auth, convo.userRequest.result.parameters.location[0]);

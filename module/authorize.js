@@ -6,7 +6,7 @@ var SCOPES = ['https://www.googleapis.com/auth/admin.directory.resource.calendar
 var TOKEN_DIR = './credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'admin-directory_v1-nodejs-quickstart.json';
 
-const gAuth = module.exports = function(){
+module.exports.auth = function(){
   return new Promise(function(resolve, reject){
   // Load client secrets from a local file.
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -23,9 +23,9 @@ const gAuth = module.exports = function(){
   });
 }
 
-gAuth().then(function(auth){
-  console.log(auth);
-});
+// gAuth().then(function(auth){
+//   console.log(auth);
+// });
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -81,6 +81,61 @@ function getNewToken(oauth2Client, callback) {
       storeToken(token);
       callback(oauth2Client);
     });
+  });
+}
+
+function getClient(){
+  return new Promise(function(resolve, reject){
+    fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+      if (err) {
+        console.log('Error loading client secret file: ' + err);
+        reject(err);
+      }
+  
+      var credentials = JSON.parse(content);
+  
+      var clientSecret = credentials.installed.client_secret;
+      var clientId = credentials.installed.client_id;
+      var redirectUrl = credentials.installed.redirect_uris[0];
+      var auth = new googleAuth();
+      var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
+
+      resolve(oauth2Client);
+    })
+  })
+}
+
+module.exports.botSetup = function(){
+  console.log('bot setup called');
+  return new Promise(function(resolve, reject){
+    getClient()
+    .then(oauth2Client => {
+      var authUrl = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: SCOPES
+      });
+      resolve(authUrl);
+    }).catch(err => {
+      reject(err);
+    });
+  });
+}
+
+module.exports.botCode = function(code){
+  console.log('code called');
+  return new Promise(function(resolve, reject){
+    getClient()
+    .then(oauth2Client => {
+      oauth2Client.getToken(code, function(err, token) {
+        if (err) {
+          console.log('Error while trying to retrieve access token', err);
+          reject(err);
+        }
+        oauth2Client.credentials = token;
+        storeToken(token);
+        resolve();
+      });
+    })
   });
 }
 

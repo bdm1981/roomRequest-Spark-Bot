@@ -16,7 +16,6 @@ Raven.config(process.env.DSN).install();
 const gAuth = require('./module/authorize');
 const gCmd = require('./module/gSuiteCommand');
 const Manager = require('./module/manager');
-const time = require('./module/timeNLP');
 const privateAPI = require('./module/privateAPI');
 const msg = require('./module/msg');
 
@@ -68,9 +67,27 @@ controller.hears('hello', 'direct_message,direct_mention', function(bot, message
   privateAPI.stopTyping(process.env.BOTTOKEN, message.channel);
 });
 
+controller.hears([/code:\s(.*)/g], 'direct_message,direct_mention', function(bot, message){
+  var re = /code:\s(.*)/;
+  var code = message.match[0].match(re);
+
+  gAuth.botCode(code[1]).then(() => {
+    bot.reply(message, `RoomRequest has been authorized!.`);
+  }).catch(err => {
+    bot.reply(message, `Oops, we ran into an error: ${err}`);
+  })
+});
+
 controller.hears(['help', 'instructions', 'howto', 'faq'], 'direct_message,direct_mention', function(bot, message) {
   bot.reply(message, msg.instruct);
 });
+
+controller.hears(['setup'], 'direct_message,direct_mention', function(bot, message) {
+  gAuth.botSetup().then(authUrl => {
+    bot.reply(message, `[Click Here](${authUrl}) to Authorize this app.`);
+  });
+});
+
 
 controller.hears(['support'], 'direct_message,direct_mention', function(bot, message) {
   spark.createMembership(process.env.SUPPORTSPACE, message.user, false, function(err, result){
@@ -83,7 +100,7 @@ controller.hears(['support'], 'direct_message,direct_mention', function(bot, mes
   });
 });
 
-controller.hears(['help', 'cancel', 'reset', 'restart'], 'direct_message,direct_mention', function(bot, message) {
+controller.hears(['cancel', 'reset', 'restart'], 'direct_message,direct_mention', function(bot, message) {
   tracker.remove(message)
   .then(function(){
     bot.reply(message, msg.cancelled);
@@ -169,7 +186,7 @@ apiai.action('selectRoom', function(message, resp, bot){
         dateTime: dbConvo.freeBusy.timeMax
       } ,
     }
-    return gAuth()
+    return gAuth.auth()
     .then(function(auth){
       return gCmd.bookRoom(auth, bookDetail);
     });
