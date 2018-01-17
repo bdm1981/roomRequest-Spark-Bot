@@ -160,7 +160,8 @@ apiai.action('selectRoom', function(message, resp, bot){
     var bookDetail = {
       attendees: [{email: dbConvo.user}], 
       calendarId: dbConvo.potentialRooms[index].resourceEmail, 
-      summary: `${dbConvo.user}'s meeting`, 
+      summary: `${dbConvo.user}'s meeting`,
+      location: '@webex', 
       start: { 
         dateTime: dbConvo.freeBusy.timeMin
       },

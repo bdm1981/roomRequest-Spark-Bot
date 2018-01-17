@@ -53,6 +53,7 @@ var gCmd = module.exports = {
         calendar.events.insert({
           auth: auth,
           calendarId: bookDetail.calendarId,
+          sendNotifications: true,
           resource: bookDetail
         }, function(err, response){
           if(err){
@@ -146,7 +147,7 @@ var gCmd = module.exports = {
           convo.rooms = output.items;
 
           // Format the time
-          var dateString = time.input({apiai: convo.userRequest, timezone: 'CST'});
+          var dateString = time.input({apiai: convo.userRequest, timezone: convo.rooms[0].timeZone});
           var rooms = convo.rooms.map(room => {
             return { "id": room.resourceEmail };
           });
@@ -155,7 +156,7 @@ var gCmd = module.exports = {
           convo.freeBusy = {
             timeMin: dateString.start,
             timeMax: dateString.end,
-            timeZone: 'CST',
+            timeZone: rooms[0].timeZone,
             items: rooms
           }
           
