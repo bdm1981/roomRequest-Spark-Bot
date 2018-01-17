@@ -131,7 +131,6 @@ apiai.all(function(message, resp, bot){
 });
 
 apiai.action('lookup', function(message, resp, bot){
-  var auth;
   privateAPI.startTyping(process.env.BOTTOKEN, message.channel);
   console.log('lookup action');
 
@@ -143,77 +142,36 @@ apiai.action('lookup', function(message, resp, bot){
   }else{
     tracker.update(message, {userRequest: resp.result.parameters})
     .then(function(){
-      return gAuth();
-    })
-    .then(function(auth){
-      auth = auth;
-      return gCmd.findBuilding(auth, resp.result.parameters.location[0]);
-    })
-    .then(function(output){
-      var rooms = output.items;
-
-      return tracker.update(message, {
-        rooms: rooms
-        }
-      );
-    })
-    .then(function(){
-      // pull the current tracker details
-      return tracker.find(message)
-    })
-    .then(function(dbConvo){
-      // normalize time input for consumption by EWS.
-      var dateString = time.input({apiai: resp, timezone: 'CST'});
-      var rooms = dbConvo.rooms.map(room => {
-        return { "id": room.resourceEmail };
-      });
-      // Generator the ewsArgs
-      var freeBusy = {
-        timeMin: dateString.start,
-        timeMax: dateString.end,
-        timeZone: 'CST',
-        items: rooms
-      }
-
-      // add the ewsArgs to the dbConvo
-      return tracker.update(message, {freeBusy: freeBusy});
-    })
-    .then(function(){
-      return tracker.find(message)
-      .then(function(dbConvo){
-        // Send user a message that it is looking up avialable rooms
-        var responseText = `One moment while I look for available rooms in **${dbConvo.rooms[0].buildingId.toUpperCase()}** office on **${dbConvo.freeBusy.timeMin} - ${dbConvo.freeBusy.timeMax}**  _(Local ${dbConvo.rooms[0].buildingId.toUpperCase()} Time)_.`
-        
-        bot.reply(message, responseText);
-        return gCmd.freeBusy(auth, dbConvo);
-      });
+      return gCmd.processLookup({message: message, userRequest: resp}, bot);
     })
     .then(function(result){
-      bot.reply(message, result.responseText);
+      bot.reply(message, result.result.responseText);
       privateAPI.stopTyping(process.env.BOTTOKEN, message.channel);
-      return tracker.update(message, {potentialRooms: result.potentialRooms})
-    })
-    .catch(function(e){
-      console.log(e);
     });
-
   }
 })
 
 apiai.action('selectRoom', function(message, resp, bot){
+  console.log('select room');
   tracker.find(message)
   .then(function(dbConvo){
+    console.log(dbConvo);
     var index = (parseInt(resp.result.parameters.number)-1);
     var bookDetail = {
-      requesterEmail: dbConvo.user, 
-      roomEmail: dbConvo.potentialRooms[index].roomEmail, 
-      subject: `${dbConvo.user}'s meeting`, 
-      body: "", 
-      startDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime, 
-      endDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime,
-      timezone: ewsCmd.tzId(dbConvo.buildingTZid)
+      attendees: [{email: dbConvo.user}], 
+      calendarId: dbConvo.potentialRooms[index].resourceEmail, 
+      summary: `${dbConvo.user}'s meeting`, 
+      start: { 
+        dateTime: dbConvo.freeBusy.timeMin
+      },
+      end: {
+        dateTime: dbConvo.freeBusy.timeMax
+      } ,
     }
-    return ewsCmd.bookRoom(bookDetail);
+    return gAuth()
+    .then(function(auth){
+      return gCmd.bookRoom(auth, bookDetail);
+    });
   })
   .then(function(){
     bot.reply(message, msg.success);
@@ -223,9 +181,5 @@ apiai.action('selectRoom', function(message, resp, bot){
     Raven.captureException(e);
     bot.reply(message, msg.error);
     return tracker.remove(message);
-  })
-  .catch(function(e){
-    Raven.captureException(e);
-    console.log(e);
   });
 });

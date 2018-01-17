@@ -16,7 +16,7 @@ module.exports = {
       endDateTime = moment(startDateTime).add(1, 'h');
       console.log("Default End time used: ", endDateTime.format());
     }
-    return {start: startDateTime, end: endDateTime};
+    return {start: startDateTime.format(), end: endDateTime.format()};
   },
 
   input: function(params){

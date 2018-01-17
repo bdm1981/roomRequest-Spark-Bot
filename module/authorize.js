@@ -2,7 +2,7 @@ var fs = require('fs');
 var readline = require('readline');
 var googleAuth = require('google-auth-library');
 
-var SCOPES = ['https://www.googleapis.com/auth/admin.directory.resource.calendar', 'https://www.googleapis.com/auth/calendar'];
+var SCOPES = ['https://www.googleapis.com/auth/admin.directory.resource.calendar', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.readonly'];
 var TOKEN_DIR = './credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'admin-directory_v1-nodejs-quickstart.json';
 
@@ -17,7 +17,6 @@ const gAuth = module.exports = function(){
       // Authorize a client with the loaded credentials
       
       authorize(JSON.parse(content), function(auth){
-        console.log('inside authorize', auth);
         resolve(auth);
       });
     });
