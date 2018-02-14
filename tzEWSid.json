@@ -1842,6 +1842,12 @@
     "EWStimezoneId": "Central Europe Standard Time"
   },
   {
+    "timezone": "Europe/London",
+    "timezoneAbbr": "CEST",
+    "timezoneOffset": "+01:00",
+    "EWStimezoneId": "Central Europe Standard Time"
+  },
+  {
     "timezone": "Europe/Madrid",
     "timezoneAbbr": "CEST",
     "timezoneOffset": "+01:00",
