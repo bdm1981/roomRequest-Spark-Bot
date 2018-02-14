@@ -219,7 +219,7 @@ module.exports = {
       var availability = [];
 
       // regex to filter out rooms that are available. "0" indicates its free "2" means its booked
-      var re = new RegExp('^(0+)$', "g");
+      var re = new RegExp('^(0+)$');
       
       if(Array.isArray(result.FreeBusyResponseArray.FreeBusyResponse)){
         availability = result.FreeBusyResponseArray.FreeBusyResponse;

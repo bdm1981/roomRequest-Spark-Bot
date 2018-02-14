@@ -1788,6 +1788,12 @@
     "EWStimezoneId": "GMT Standard Time"
   },
   {
+    "timezone": "Europe/London",
+    "timezoneAbbr": "GMT",
+    "timezoneOffset": "+00:00",
+    "EWStimezoneId": "GMT Standard Time"
+  },
+  {
     "timezone": "Europe/Gibraltar",
     "timezoneAbbr": "CEST",
     "timezoneOffset": "+01:00",
