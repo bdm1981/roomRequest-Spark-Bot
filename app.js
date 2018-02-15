@@ -1,5 +1,6 @@
 const SparkWebSocket = require('ciscospark-websocket-events');
 const moment = require('moment-timezone');
+const fetch = require('node-fetch');
 require('dotenv').config();
 
 const CiscoSparkClient = require('node-sparkclient');
@@ -73,6 +74,13 @@ controller.hears(['help', 'instructions', 'howto', 'faq'], 'direct_message,direc
   bot.reply(message, msg.instruct);
 });
 
+controller.hears(['who'], 'direct_mention', function(bot, message){
+  members({roomId: message.channel})
+  .then(function(members){
+    console.log('members: ', members);
+  });
+})
+
 controller.hears(['support'], 'direct_message,direct_mention', function(bot, message) {
   spark.createMembership(process.env.SUPPORTSPACE, message.user, false, function(err, result){
     if(err){
@@ -102,6 +110,7 @@ controller.hears([/^\d+/g], ['direct_message', 'direct_mention'], function(bot, 
 });
 
 controller.hears('.*', ['direct_message', 'direct_mention'], function(bot, message) {
+  console.log(message);
   tracker.find(message)
   .then(function(dbConvo){
     if(!dbConvo){
@@ -220,15 +229,9 @@ apiai.action('selectRoom', function(message, resp, bot){
     tracker.find(message)
     .then(function(dbConvo){
       var index = (parseInt(resp.result.parameters.number)-1);
-      var bookDetail = {
-        requesterEmail: dbConvo.user, 
-        roomEmail: dbConvo.potentialRooms[index].roomEmail, 
-        subject: `${dbConvo.user}'s meeting`, 
-        body: "", 
-        startDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime, 
-        endDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime,
-        timezone: ewsCmd.tzId(dbConvo.buildingTZid)
-      };
+      return buildBookingDetail(dbConvo, index);
+    }).then(function(bookDetail){
+      console.log('booking Detail: ', bookDetail);
       return ewsCmd.bookRoom(bookDetail);
     })
     .then(function(){
@@ -242,3 +245,73 @@ apiai.action('selectRoom', function(message, resp, bot){
     });
   }
 });
+
+function members(roomId){
+  return fetch('https://api.ciscospark.com/v1/memberships?roomId='+roomId, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer '+process.env.BOTTOKEN }
+  }).then(res => res.json())
+  .then(json => {
+    var members = [];
+    json.items.forEach(user => {
+      var re = new RegExp('^.*@sparkbot.io$');
+      if(!user.isMonitor && !re.test(user.personEmail)){
+        members.push(user.personEmail);
+      }
+    })
+    return members;
+  })
+}
+
+// format the attendde list for EWS
+function buildAttendeeList(list){
+  var attendees = [];
+  list.forEach(attendee => {
+    attendees.push({
+      "Mailbox": {
+        "EmailAddress": attendee
+      }
+    })
+  })
+
+  return attendees;
+}
+
+function buildBookingDetail(dbConvo, index){
+  var list = [];
+  return new Promise(function(resolve, reject){
+    if(dbConvo.messages[0].roomType === 'group'){
+      members(dbConvo.channel).then(result => {
+        list = result;
+        list.push(dbConvo.potentialRooms[index].roomEmail);
+      }).then(() => {
+        var attendees = buildAttendeeList(list);
+        
+        var bookDetail = {
+          requesterEmail: dbConvo.user, 
+          attendees: attendees,
+          subject: `${dbConvo.user}'s meeting`, 
+          body: "", 
+          startDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime, 
+          endDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime,
+          timezone: ewsCmd.tzId(dbConvo.buildingTZid)
+        };
+
+        resolve(bookDetail);
+      })
+    }else{
+      var attendees = buildAttendeeList([dbConvo.potentialRooms[index].roomEmail]);
+      var bookDetail = {
+        requesterEmail: dbConvo.user, 
+        attendees: attendees,
+        subject: `${dbConvo.user}'s meeting`, 
+        body: "", 
+        startDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime, 
+        endDateTime: dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime,
+        timezone: ewsCmd.tzId(dbConvo.buildingTZid)
+      };
+
+      resolve(bookDetail);
+    }
+  })
+}

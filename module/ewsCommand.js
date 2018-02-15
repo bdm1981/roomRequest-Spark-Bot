@@ -181,11 +181,7 @@ module.exports = {
                       "EmailAddress": bookDetail.requesterEmail
                     }
                   },
-                  "Attendee": {
-                    "Mailbox": {
-                      "EmailAddress": bookDetail.roomEmail
-                    }
-                  }
+                  "Attendee": bookDetail.attendees
                 }
               }
             }
