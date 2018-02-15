@@ -231,7 +231,6 @@ apiai.action('selectRoom', function(message, resp, bot){
       var index = (parseInt(resp.result.parameters.number)-1);
       return buildBookingDetail(dbConvo, index);
     }).then(function(bookDetail){
-      console.log('booking Detail: ', bookDetail);
       return ewsCmd.bookRoom(bookDetail);
     })
     .then(function(){
