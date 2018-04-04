@@ -55,7 +55,7 @@ module.exports = {
       // send response to user
       return params.sessionData.freeBusyResponse;
     }).catch(err => {
-      //logger.error({sessionData: sessionData, error: err});
+      logger.error({sessionData: params.sessionData, error: err});
     })
   },
 
@@ -165,10 +165,10 @@ module.exports = {
 
 function parseSlots(input){
   var slotInput = input.dialogflow.result.contexts[0].parameters;
-  var slotStart = parseInt(slotInput['slot-start']);
-  slotStart = slotStart.replace('-', '');
-  var slotEnd = parseInt(slotInput['slot-end']);
-  slotEnd = slotEnd.replace('-', '');
+  var slotStart = slotInput['slot-start'];
+  slotStart = parseInt(slotStart.replace('-', ''));
+  var slotEnd = slotInput['slot-end'];
+  slotEnd = parseInt(slotEnd.replace('-', ''));
   var start, end;
   
   var startObject = input.sessionData.freeBusyFiltered.filter(match => match.option == slotStart);
