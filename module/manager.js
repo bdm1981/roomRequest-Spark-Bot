@@ -136,10 +136,10 @@ var tracker = module.exports = {
 
 function determineOffset(timezone){
   var ts = Math.round((new Date()).getTime() / 1000);
-  var min = moment.tz.zone(timezone).offset(1403465838805);
-  var max = moment.tz.zone(timezone).offset(1388563200000);
+  var min = moment.tz.zone(timezone).utcOffset(1403465838805);
+  var max = moment.tz.zone(timezone).utcOffset(1388563200000);
   var dstOffset = max - min;
-  var currentOffset = moment.tz.zone(timezone).offset(ts);
+  var currentOffset = moment.tz.zone(timezone).utcOffset(ts);
 
   return {userOffset: currentOffset, userDstOffset: dstOffset};
 }
