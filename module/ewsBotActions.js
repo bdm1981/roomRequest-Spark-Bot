@@ -125,7 +125,7 @@ module.exports = {
         }
 
         params.sessionData.buildingTZid = buildings[0].timeZoneId;
-        params.sessionData.buildingBias = (buildings[0].offset / 60 * -1);
+        params.sessionData.buildingBias = (buildings[0].utcOffset / 60 * -1);
         params.sessionData.buildingDstOffset = buildings[0].dstOffset;
 
       })
