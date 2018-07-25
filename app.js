@@ -56,6 +56,7 @@ controller.setupWebserver(PORT, function(err, webserver) {
   //setup incoming webhook handler
   webserver.post('/ciscospark/receive', function(req, res) {
     controller.handleWebhookPayload(req, res, bot);
+    res.sendStatus(200);
   }); 
 });
 
