@@ -1185,13 +1185,13 @@
     "timezone": "Asia/Bangkok",
     "timezoneAbbr": "ICT",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Barnaul",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Beirut",
@@ -1293,7 +1293,13 @@
     "timezone": "Asia/Ho_Chi_Minh",
     "timezoneAbbr": "ICT",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
+  },
+  {
+    "timezone": "Asia/Saigon",
+    "timezoneAbbr": "ICT",
+    "timezoneOffset": "+07:00",
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Hong_Kong",
@@ -1305,7 +1311,7 @@
     "timezone": "Asia/Hovd",
     "timezoneAbbr": "HOVST",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Irkutsk",
@@ -1317,7 +1323,7 @@
     "timezone": "Asia/Jakarta",
     "timezoneAbbr": "WIB",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Jayapura",
@@ -1377,7 +1383,7 @@
     "timezone": "Asia/Krasnoyarsk",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Kuala_Lumpur",
@@ -1437,13 +1443,13 @@
     "timezone": "Asia/Novokuznetsk",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Novosibirsk",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Omsk",
@@ -1461,13 +1467,13 @@
     "timezone": "Asia/Phnom_Penh",
     "timezoneAbbr": "ICT",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Pontianak",
     "timezoneAbbr": "WIB",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Qatar",
@@ -1569,7 +1575,7 @@
     "timezone": "Asia/Tomsk",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Ulaanbaatar",
@@ -1593,7 +1599,7 @@
     "timezone": "Asia/Vientiane",
     "timezoneAbbr": "ICT",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Asia/Vladivostok",
@@ -2061,7 +2067,7 @@
     "timezone": "Indian/Christmas",
     "timezoneAbbr": "CXT",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Indian/Cocos",
@@ -2433,7 +2439,7 @@
     "timezone": "Etc/GMT-7",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",
-    "EWStimezoneId": "S.E. Asia Standard Time"
+    "EWStimezoneId": "SE Asia Standard Time"
   },
   {
     "timezone": "Etc/GMT-8",

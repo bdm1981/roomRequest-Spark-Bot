@@ -11,7 +11,7 @@ module.exports = {
       var members = [];
       var external = [];
       json.items.forEach(user => {
-        var re = new RegExp('^.*@sparkbot.io$');
+        var re = new RegExp('^.*@webex.bot$');
         var domainRE = new RegExp('^.*@'+process.env.DOMAIN+'$');
         if(!user.isMonitor && !re.test(user.personEmail) && domainRE.test(user.personEmail)){
           members.push({email: user.personEmail, name: user.personDisplayName});

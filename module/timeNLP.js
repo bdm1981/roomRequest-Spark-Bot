@@ -33,7 +33,10 @@ module.exports = {
     if(params.apiai.result.contexts[0].parameters['period.original'] === "now"){
       var now = moment().tz('UTC');
       logger.debug('TIME NLP:  Parsing with the NOW keyword');
-      return this.parse(`${params.apiai.result.parameters.date} ${now.format('h:m:s a')}`);
+      return this.parse(`${params.apiai.result.parameters.date} ${now.format('h:m:s a')}`, params.timezone);
+    }else if(params.apiai.result.contexts[0].parameters['date.original'] === "tomorrow"){
+      logger.debug('TIME NLP: Parsing with relative date and specific time');
+      return this.parse(`${params.apiai.result.contexts[0].parameters['date.original']} ${timeInput[0].time}`, params.timezone);
     }else if(
         params.apiai.result.parameters.date && 
         params.apiai.result.parameters.period.length == 0

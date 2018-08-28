@@ -10,26 +10,31 @@
   "private": false,
   "scripts": {
     "postinstall": "node ./scripts/postinstall.js",
-    "start": "node ./app.js"
+    "start": "node ./app.js",
+    "test": "mocha --reporter progress ./tests/**/*.test.js",
+    "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
     "api-ai-botkit": "^1.1.1",
-    "bluebird": "^3.4.6",
+    "bluebird": "^3.5.1",
     "body-parser": "^1.17.2",
     "botkit": "^0.5.6",
     "chrono-node": "*",
     "ciscospark-websocket-events": "^1.0.6",
     "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
-    "moment-timezone": "*",
-    "mongojs": "*",
-    "node-ews": "*",
-    "node-fetch": "^2.0.0",
+    "moment-timezone": "^0.5.14",
+    "mongojs": "^2.5.0",
+    "node-ews": "^3.2.4",
+    "node-fetch": "^2.1.2",
     "node-sparkclient": "^0.1.4",
     "raven": "^1.1.3",
-    "winston": "^2.4.0"
+    "winston": "^2.4.1"
   },
   "devDependencies": {
-    "eslint": "^4.3.0"
+    "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "mocha": "^5.2.0",
+    "sinon": "^5.0.10"
   }
 }
