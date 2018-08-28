@@ -31,7 +31,7 @@ module.exports = {
       params.MailboxDataArray = ewsCmd.createMailboxData(params.sessionData.members);
       return ewsCmd.freeBusy(params);
     }).then((freeBusyRaw) => {
-      logger.debug(freeBusyRaw);
+      logger.debug('Raw freebusy: ', freeBusyRaw);
       // Save raw free busy output
       params.sessionData.freeBusyRaw = freeBusyRaw.FreeBusyResponseArray.FreeBusyResponse;
       

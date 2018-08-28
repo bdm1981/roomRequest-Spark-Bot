@@ -247,7 +247,7 @@ var ewsCmd = module.exports = {
     }
 
     if (freeBusyInfo.length === 0) {
-      responseText = `I found no rooms available in **${dbConvo.buildingId}** on **${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.StartTime).format("MM/DD, h:mm a")} - ${moment(dbConvo.ewsArgs.FreeBusyViewOptions.TimeWindow.EndTime).format("h:mm a")}** _(${dbConvo.userTimezone || dbConvo.buildingTZid} Time)_.`;
+      responseText = `I found no rooms available in **${dbConvo.buildingId}** at the requested time.`;
     }else{
       responseText = `I found ${freeBusyInfo.length} rooms available at this time. \n\n Enter the number of the room you would like to book.\n\n`;
       for (var i = 0; i < freeBusyInfo.length; i += 1) {
@@ -267,9 +267,10 @@ var ewsCmd = module.exports = {
 
   // convert standard timezone into EWS timezone Id
   tzId: function(timezone){
+    logger.debug('input timezone', timezone);
     for(var i = 0; i < ewsId.length; i++){
       if(ewsId[i].timezone == timezone){
-        //logger.debug(ewsId[i].EWStimezoneId);
+        logger.debug(ewsId[i].EWStimezoneId);
         return ewsId[i].EWStimezoneId;
       }
     }
@@ -285,19 +286,24 @@ var ewsCmd = module.exports = {
       mergedFreeBusyArray = mergedFreeBusyArray.FreeBusyResponseArray.FreeBusyResponse;
     }
     mergedFreeBusyArray.forEach((freeBusy, index) => {
-      var mergedFreeBusy = freeBusy.FreeBusyView.MergedFreeBusy;
-      freeBusyMap = [];
-      for(var i = 0; i < mergedFreeBusy.length; i++){
-        var tempOffset = offset * i;
-
-        if(mergedFreeBusy[i] == 0){
-          freeBusyMap.push({index: i, status: mergedFreeBusy[i], free: true, time: moment(sessionData.requestStart).add(tempOffset, 'm').format(), name: sessionData.members[index].name, available: []});
-        }else{
-          freeBusyMap.push({index: i, status: mergedFreeBusy[i], free: false, time: moment(sessionData.requestStart).add(tempOffset, 'm').format(), name: sessionData.members[index].name, available: []});
+      if(freeBusy.FreeBusyView.FreeBusyViewType == 'None'){
+        logger.debug('No calendar access for: ');
+      }else{
+        var mergedFreeBusy = freeBusy.FreeBusyView.MergedFreeBusy;
+        freeBusyMap = [];
+        for(var i = 0; i < mergedFreeBusy.length; i++){
+          var tempOffset = offset * i;
+  
+          if(mergedFreeBusy[i] == 0){
+            freeBusyMap.push({index: i, status: mergedFreeBusy[i], free: true, time: moment(sessionData.requestStart).add(tempOffset, 'm').format(), name: sessionData.members[index].name, available: []});
+          }else{
+            freeBusyMap.push({index: i, status: mergedFreeBusy[i], free: false, time: moment(sessionData.requestStart).add(tempOffset, 'm').format(), name: sessionData.members[index].name, available: []});
+          }
         }
+        compiledMap.push(freeBusyMap);
       }
-      compiledMap.push(freeBusyMap);
     })
+
 
     return compiledMap;
   },
@@ -380,6 +386,8 @@ var ewsCmd = module.exports = {
         responseText += '\n\n At least 60% of the room members are free at these times: \n\n '+partialText+'\n';
         responseText += 'Select a time slot or a slot range (ie: 1 - 2) to schedule a meeting.\n\n';
       }
+    }else{
+      responseText = "I wasn't able to read the calendar of any of the room participants.";
     }
 
     logger.debug('freeText: ', freeText);
@@ -404,6 +412,7 @@ var ewsCmd = module.exports = {
 
   // format booking detail Request
   buildBookingDetail: function(params){
+    logger.debug('build bookig detail: ', params);
     var external;
     var attendees = ewsCmd.buildAttendeeList(params.sessionData.members);
 

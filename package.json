@@ -9,7 +9,6 @@
   },
   "private": false,
   "scripts": {
-    "postinstall": "node ./scripts/postinstall.js",
     "start": "node ./app.js"
   },
   "dependencies": {
