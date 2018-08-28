@@ -1380,6 +1380,12 @@
     "EWStimezoneId": "India Standard Time"
   },
   {
+    "timezone": "Asia/Calcutta",
+    "timezoneAbbr": "IST",
+    "timezoneOffset": "+05:30",
+    "EWStimezoneId": "India Standard Time"
+  },
+  {
     "timezone": "Asia/Krasnoyarsk",
     "timezoneAbbr": "+07",
     "timezoneOffset": "+07:00",

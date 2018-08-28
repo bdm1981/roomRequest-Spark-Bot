@@ -3,7 +3,7 @@ const logger = require("./utils/logger");
 require('dotenv').config();
 
 const CiscoSparkClient = require('node-sparkclient');
-const spark = new CiscoSparkClient('Bearer '+process.env.BOTTOKEN);
+const spark = new CiscoSparkClient(process.env.BOTTOKEN);
 
 // // api.ai setup
 const apiaibotkit = require('api-ai-botkit');
@@ -184,6 +184,7 @@ apiai.action('lookup', function(message, resp, bot){
   
   if(resp.result.actionIncomplete){
     logger.debug('I need more info');
+    logger.debug('current info: ', resp)
     bot.reply(message, resp.result.fulfillment.speech);
   }else{
     tracker.find(message)
