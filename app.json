@@ -37,6 +37,10 @@
       "description": "MongoDB Collection name containing building information.",
       "value": "buildings"
     },
+    "PREFSCOLLECTION": {
+      "description": "MongoDB Collection name containing user preferences information.",
+      "value": "userprefs"
+    },
     "SUPPORTSPACE":{
       "description": "Space space ID that users can be added to when using the support keyword."
     },
