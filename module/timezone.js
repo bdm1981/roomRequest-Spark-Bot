@@ -5,14 +5,14 @@ const logger = require("../utils/logger");
 module.exports = {
   geo: function(input){
     logger.debug('geo input: ', input);
-    return fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+input.city+'&key=AIzaSyB4F_jWdtbj1eIVUtfiw1QiLaicQSwZQwk').then(res => res.json())
+    return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address='+input.city+'&key=${process.env.GOOGLE_API_KEY}`).then(res => res.json())
            .then(json => {
             return { name: json.results[0].formatted_address, lat: json.results[0].geometry.location.lat, lng: json.results[0].geometry.location.lng}
           })
   },
 
   lookup: function(input){
-    return fetch('https://maps.googleapis.com/maps/api/timezone/json?location='+input.lat+','+input.lng+'&timestamp=1331766000&key=AIzaSyB4F_jWdtbj1eIVUtfiw1QiLaicQSwZQwk').then(res => res.json());
+    return fetch(`https://maps.googleapis.com/maps/api/timezone/json?location='+input.lat+','+input.lng+'&timestamp=1331766000&key=${process.env.GOOGLE_API_KEY}`).then(res => res.json());
   },
 
   get: function(input){
